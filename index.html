@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>绘图</title>
+</head>
+
+<body onload="init();">
+    <canvas id="canvas" width="1000" height="1000"></canvas>
+    <script type="text/javascript">
+    function init(){
+    	window.requestAnimationFrame(drawTop);
+
+    }
+    function drawTop() {
+        var canvas = document.getElementById('canvas');
+        if (canvas.getContext) {
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0,300,300); // clear canvas
+            ctx.beginPath();
+            var percent = 0.3;  // 可变参数
+            // 变量：三种颜色
+            var radius = 50.0; // 圆弧半径
+            var lineWidth = 5.0;
+            var innerRadius = radius - lineWidth / 2;
+            var offsetB = radius / 10;
+
+            ctx.lineWidth = lineWidth; // 圆边宽度
+            var x = radius + lineWidth/2; // x 坐标值
+            var y = radius + lineWidth/2; // y 坐标值
+            var startAngle = 0; // 开始点
+            var endAngle = Math.PI * 2; // 结束点,画个圆
+            var anticlockwise = false; // 顺时针或逆时针
+            ctx.strokeStyle = "#DCA087"; // 圆边颜色
+            ctx.beginPath();
+            ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+            ctx.lineWidth = lineWidth;
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.fillStyle = "#FBCBB4"; // 下部填充颜色
+            var percentSide = 2 * innerRadius * percent - innerRadius;
+            var asin = Math.asin(percentSide / innerRadius);
+            var offsetJiaodu = 360 - asin * 180 / Math.PI;
+            var fillStartAngle = (offsetJiaodu + 5) * Math.PI / 180; //-0.5*Math.PI*2;
+
+            var fillEndAngle = (270 + 270 - offsetJiaodu - 5) * Math.PI / 180;
+            ctx.arc(x, y, innerRadius, fillStartAngle, fillEndAngle, false);
+            // ctx.strokeStyle = "#FCE1D4";
+            // ctx.lineWidth = 1;
+            ctx.fill();
+
+            let jiaodu = offsetJiaodu; //radius/20;
+            let offsetAngle = 10;
+            var x0 = x + innerRadius * Math.cos((180 - jiaodu) * Math.PI / 180);
+            var y0 = y + innerRadius * Math.sin((180 - jiaodu) * Math.PI / 180);
+
+            var x1 = x + innerRadius * Math.cos((jiaodu + offsetAngle) * Math.PI / 180);
+            var y1 = y + innerRadius * Math.sin((jiaodu + offsetAngle) * Math.PI / 180);
+
+            var x3 = x + innerRadius * Math.cos((180 - jiaodu - offsetAngle) * Math.PI / 180);
+            var y3 = y + innerRadius * Math.sin((180 - jiaodu - offsetAngle) * Math.PI / 180);
+
+            // 画波浪
+            ctx.beginPath();
+            ctx.fillStyle = "#FCE1D4"; // 波浪填充颜色
+            ctx.strokeStyle = "#FCE1D4"; // 波浪线颜色
+            ctx.moveTo(x0, y0);
+
+            ctx.bezierCurveTo(x, y0 - offsetB, x, y1 + offsetB, x1, y1);
+
+            ctx.arc(x, y, innerRadius, (jiaodu + offsetAngle) * Math.PI / 180, (jiaodu) * Math.PI / 180, true);
+
+            ctx.bezierCurveTo(x, y0 - offsetB, x, y1 + offsetB, x3, y3);
+
+            ctx.arc(x, y, innerRadius, (180 - jiaodu - offsetAngle) * Math.PI / 180, (180 - jiaodu) * Math.PI / 180, false);
+
+
+            ctx.fill();
+
+
+        }
+    }
+    </script>
+</body>
+
+</html>
